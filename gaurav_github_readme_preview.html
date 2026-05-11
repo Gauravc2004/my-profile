@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Orbitron:wght@700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0a0a0f;color:#e0e0ff;font-family:'Inter',sans-serif;overflow-x:hidden}
+
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}
+  @keyframes slideInLeft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes slideInRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+  @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  @keyframes borderGlow{0%,100%{box-shadow:0 0 5px #00f7ff33,0 0 20px #00f7ff11}50%{box-shadow:0 0 20px #00f7ff66,0 0 40px #00f7ff22}}
+  @keyframes scanline{0%{top:-10%}100%{top:110%}}
+  @keyframes iconBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.15)}}
+  @keyframes rainbowText{0%{color:#00f7ff}20%{color:#bf00ff}40%{color:#ff6b6b}60%{color:#ffd700}80%{color:#00ff88}100%{color:#00f7ff}}
+  @keyframes typing{from{width:0}to{width:100%}}
+  @keyframes gridMove{from{transform:translateY(0)}to{transform:translateY(40px)}}
+  @keyframes particleFly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
+  @keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 6px transparent}}
+
+  .container{max-width:680px;margin:0 auto;padding:20px 16px;position:relative}
+
+  .grid-bg{position:fixed;inset:0;background-image:
+    linear-gradient(rgba(0,247,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,247,255,0.04) 1px,transparent 1px);
+    background-size:40px 40px;animation:gridMove 4s linear infinite;pointer-events:none;z-index:0}
+
+  .content{position:relative;z-index:1}
+
+  /* HEADER */
+  .header{text-align:center;padding:40px 0 30px;animation:fadeInUp .8s ease forwards}
+  .avatar-wrap{display:inline-block;position:relative;margin-bottom:20px}
+  .avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#00f7ff,#bf00ff,#ff6b6b);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;color:#fff;animation:float 3s ease-in-out infinite;position:relative;z-index:1}
+  .avatar-ring{position:absolute;inset:-6px;border-radius:50%;border:2px solid transparent;background:linear-gradient(#0a0a0f,#0a0a0f) padding-box,linear-gradient(0deg,#00f7ff,#bf00ff,#ff6b6b,#00f7ff) border-box;animation:rotate 3s linear infinite}
+  .avatar-ring2{position:absolute;inset:-14px;border-radius:50%;border:1px dashed rgba(0,247,255,0.3);animation:rotate 8s linear infinite reverse}
+
+  .name{font-family:'Orbitron',sans-serif;font-size:clamp(20px,5vw,28px);font-weight:900;background:linear-gradient(90deg,#00f7ff,#bf00ff,#ff6b6b,#ffd700,#00f7ff);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;margin-bottom:6px}
+
+  .title-tag{display:inline-block;font-family:'Space Mono',monospace;font-size:13px;color:#00f7ff;border:1px solid #00f7ff44;padding:4px 14px;border-radius:20px;margin-bottom:16px;animation:borderGlow 2s ease-in-out infinite}
+
+  .typing-wrap{font-family:'Space Mono',monospace;font-size:13px;color:#aaa;height:20px}
+  .cursor{display:inline-block;width:8px;height:14px;background:#00f7ff;animation:blink .7s infinite;vertical-align:middle;margin-left:2px}
+
+  /* SOCIAL ICONS */
+  .social-section{margin:24px 0;animation:fadeInUp .9s .2s both}
+  .social-label{font-family:'Space Mono',monospace;font-size:11px;color:#555;text-align:center;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+  .social-grid{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+  .social-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;font-family:'Space Mono',monospace;border:1px solid;transition:all .2s;cursor:pointer;animation:fadeInUp .6s both}
+  .social-btn:hover{transform:translateY(-3px) scale(1.05);animation:iconBounce .4s ease}
+  .s-linkedin{color:#0077b5;border-color:#0077b533;background:#0077b511}.s-linkedin:hover{background:#0077b522;box-shadow:0 0 20px #0077b544}
+  .s-github{color:#c9d1d9;border-color:#c9d1d933;background:#c9d1d911}.s-github:hover{background:#c9d1d922;box-shadow:0 0 20px #c9d1d944}
+  .s-twitter{color:#1d9bf0;border-color:#1d9bf033;background:#1d9bf011}.s-twitter:hover{background:#1d9bf022;box-shadow:0 0 20px #1d9bf044}
+  .s-instagram{color:#e1306c;border-color:#e1306c33;background:#e1306c11}.s-instagram:hover{background:#e1306c22;box-shadow:0 0 20px #e1306c44}
+  .s-youtube{color:#ff0000;border-color:#ff000033;background:#ff000011}.s-youtube:hover{background:#ff000022;box-shadow:0 0 20px #ff000044}
+  .s-kaggle{color:#20beff;border-color:#20beff33;background:#20beff11}.s-kaggle:hover{background:#20beff22;box-shadow:0 0 20px #20beff44}
+  .s-medium{color:#00b074;border-color:#00b07433;background:#00b07411}.s-medium:hover{background:#00b07422;box-shadow:0 0 20px #00b07444}
+  .s-email{color:#ff6b6b;border-color:#ff6b6b33;background:#ff6b6b11}.s-email:hover{background:#ff6b6b22;box-shadow:0 0 20px #ff6b6b44}
+  .s-discord{color:#5865f2;border-color:#5865f233;background:#5865f211}.s-discord:hover{background:#5865f222;box-shadow:0 0 20px #5865f244}
+  .s-tableau{color:#e97627;border-color:#e9762733;background:#e9762711}.s-tableau:hover{background:#e9762722;box-shadow:0 0 20px #e9762744}
+
+  /* SKILL SECTION */
+  .section{margin:28px 0;animation:fadeInUp .8s both}
+  .sec-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .sec-line{flex:1;height:1px;background:linear-gradient(90deg,#00f7ff33,transparent)}
+  .sec-title{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#00f7ff;white-space:nowrap}
+
+  .badge-grid{display:flex;flex-wrap:wrap;gap:8px}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;font-size:12px;font-family:'Space Mono',monospace;font-weight:700;border:1px solid;transition:all .25s;cursor:default;animation:fadeInUp .5s both}
+  .badge:hover{transform:translateY(-2px) scale(1.08);animation:badgePulse .5s}
+
+  .b-python{color:#ffd343;border-color:#ffd34344;background:#ffd34311}
+  .b-sql{color:#00bcd4;border-color:#00bcd444;background:#00bcd411}
+  .b-powerbi{color:#f2c811;border-color:#f2c81144;background:#f2c81111}
+  .b-excel{color:#1d6f42;border-color:#1d6f4244;background:#1d6f4211}
+  .b-pandas{color:#150458;border-color:#8b67ff44;background:#8b67ff11;color:#8b67ff}
+  .b-numpy{color:#4dabcf;border-color:#4dabcf44;background:#4dabcf11}
+  .b-matplotlib{color:#11557c;border-color:#4ec9ea44;background:#4ec9ea11;color:#4ec9ea}
+  .b-seaborn{color:#76a5af;border-color:#76a5af44;background:#76a5af11}
+  .b-ml{color:#ff6b6b;border-color:#ff6b6b44;background:#ff6b6b11}
+  .b-mysql{color:#00758f;border-color:#00aec744;background:#00aec711;color:#00aec7}
+  .b-mongodb{color:#4db33d;border-color:#4db33d44;background:#4db33d11}
+  .b-js{color:#f7df1e;border-color:#f7df1e44;background:#f7df1e11}
+  .b-git{color:#f05032;border-color:#f0503244;background:#f0503211}
+  .b-tableau{color:#e97627;border-color:#e9762744;background:#e9762711}
+
+  /* STATS CARDS */
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .stat-card{background:#0d0d1a;border:1px solid #00f7ff22;border-radius:10px;padding:14px;text-align:center;transition:all .3s;animation:borderGlow 3s ease-in-out infinite;position:relative;overflow:hidden}
+  .stat-card:hover{border-color:#00f7ff66;transform:translateY(-2px)}
+  .stat-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(0,247,255,0.03),transparent 60%);animation:rotate 8s linear infinite}
+  .stat-num{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;background:linear-gradient(90deg,#00f7ff,#bf00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;position:relative;z-index:1}
+  .stat-label{font-size:11px;color:#555;font-family:'Space Mono',monospace;letter-spacing:1px;margin-top:4px;position:relative;z-index:1}
+
+  /* PROJECT CARDS */
+  .project-card{background:#0d0d1a;border:1px solid #ffffff11;border-radius:12px;padding:16px;margin-bottom:12px;transition:all .3s;position:relative;overflow:hidden;animation:slideInLeft .6s both}
+  .project-card:hover{border-color:#00f7ff44;transform:translateX(4px);box-shadow:0 0 30px #00f7ff11}
+  .project-card::after{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:linear-gradient(180deg,#00f7ff,#bf00ff)}
+  .proj-title{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#00f7ff;margin-bottom:6px}
+  .proj-desc{font-size:12px;color:#888;line-height:1.6;font-family:'Inter',sans-serif}
+  .proj-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .proj-tag{font-size:10px;padding:2px 8px;border-radius:4px;background:#ffffff08;color:#aaa;font-family:'Space Mono',monospace}
+
+  /* QUOTE */
+  .quote-card{background:linear-gradient(135deg,#0d0d1a,#130d1a);border:1px solid #bf00ff33;border-radius:12px;padding:20px;text-align:center;animation:fadeInUp .8s both}
+  .quote-text{font-family:'Space Mono',monospace;font-size:13px;color:#ddd;line-height:1.8;font-style:italic}
+  .quote-author{font-size:11px;color:#555;margin-top:8px;font-family:'Inter',sans-serif;letter-spacing:2px}
+
+  /* VISITOR BADGE */
+  .footer-row{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:24px;padding-top:20px;border-top:1px solid #ffffff08;animation:fadeInUp 1s .5s both}
+  .visitor-badge{font-family:'Space Mono',monospace;font-size:11px;color:#555;display:flex;align-items:center;gap:6px}
+  .visitor-count{color:#00f7ff;font-weight:700}
+  .online-dot{width:6px;height:6px;background:#00ff88;border-radius:50%;animation:pulse 1.5s infinite;display:inline-block}
+
+  /* CONTRIBUTION HEATMAP */
+  .heat-grid{display:flex;flex-wrap:wrap;gap:2px;padding:12px;background:#0d0d1a;border-radius:10px;border:1px solid #ffffff08}
+  .heat-cell{width:11px;height:11px;border-radius:2px;transition:all .2s}
+  .heat-cell:hover{transform:scale(1.4);z-index:2;position:relative}
+  .h0{background:#161b22}.h1{background:#0e4429}.h2{background:#006d32}.h3{background:#26a641}.h4{background:#39d353}
+
+  .scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,247,255,0.1),transparent);animation:scanline 4s linear infinite;pointer-events:none}
+
+  svg.icon{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="container content">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="avatar-wrap">
+      <div class="avatar-ring2"></div>
+      <div class="avatar-ring"></div>
+      <div class="avatar">GS</div>
+    </div>
+    <div class="name">GAURAV SINGH CHAUHAN</div>
+    <div class="title-tag">&lt; Data Analyst / Python / Power BI &gt;</div>
+    <div class="typing-wrap" id="typing-area"><span id="typed-text"></span><span class="cursor"></span></div>
+  </div>
+
+  <!-- SOCIAL LINKS -->
+  <div class="social-section">
+    <div class="social-label">⟡ Connect With Me ⟡</div>
+    <div class="social-grid">
+      <a class="social-btn s-linkedin" href="https://linkedin.com/in/your-link" target="_blank" style="animation-delay:.05s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a class="social-btn s-github" href="https://github.com/Gauravc2004" target="_blank" style="animation-delay:.1s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+      <a class="social-btn s-twitter" href="https://twitter.com/your-handle" target="_blank" style="animation-delay:.15s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.722-8.842L1.508 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X / Twitter
+      </a>
+      <a class="social-btn s-instagram" href="https://instagram.com/your-handle" target="_blank" style="animation-delay:.2s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        Instagram
+      </a>
+      <a class="social-btn s-kaggle" href="https://kaggle.com/your-profile" target="_blank" style="animation-delay:.25s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.336"/></svg>
+        Kaggle
+      </a>
+      <a class="social-btn s-medium" href="https://medium.com/@your-handle" target="_blank" style="animation-delay:.3s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+        Medium
+      </a>
+      <a class="social-btn s-tableau" href="https://public.tableau.com/profile/your-name" target="_blank" style="animation-delay:.35s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M11.654.174V2.377H9.682v.58h1.972v2.232h.637V2.957h1.972v-.58h-1.972V.174zM5.3 3.915V7.19H2.9v.784H5.3v3.305h.826V7.974H8.57V7.19H6.126V3.915zm13.39 0v3.275H16.3v.784h2.39v3.305h.824V7.974h2.426V7.19H19.51V3.915zM11.45 8.254v3.9H8.46v1.023h2.99v3.9h1.048v-3.9H15.5v-1.023h-3.002v-3.9zM2.21 12.522v3.014H0v.726h2.21v3.015h.726v-3.015H5.15v-.726H2.936v-3.014zm19.636 0v3.014h-2.21v.726h2.21v3.015h.726v-3.015H24.81v-.726h-2.238v-3.014zM11.654 17.65v2.203H9.682v.58h1.972v2.232h.637v-2.232h1.972v-.58h-1.972V17.65z"/></svg>
+        Tableau
+      </a>
+      <a class="social-btn s-youtube" href="https://youtube.com/@your-channel" target="_blank" style="animation-delay:.4s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+        YouTube
+      </a>
+      <a class="social-btn s-discord" href="https://discord.com/users/your-id" target="_blank" style="animation-delay:.45s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        Discord
+      </a>
+      <a class="social-btn s-email" href="mailto:yourmail@gmail.com" style="animation-delay:.5s">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+        Email
+      </a>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="section" style="animation-delay:.3s">
+    <div class="sec-header">
+      <div class="sec-line"></div>
+      <div class="sec-title">⟢ TECH STACK</div>
+      <div class="sec-line"></div>
+    </div>
+    <div class="badge-grid">
+      <span class="badge b-python" style="animation-delay:.1s">🐍 Python</span>
+      <span class="badge b-sql" style="animation-delay:.15s">🗄️ SQL</span>
+      <span class="badge b-powerbi" style="animation-delay:.2s">📊 Power BI</span>
+      <span class="badge b-excel" style="animation-delay:.25s">📗 Excel</span>
+      <span class="badge b-pandas" style="animation-delay:.3s">🐼 Pandas</span>
+      <span class="badge b-numpy" style="animation-delay:.35s">🔢 NumPy</span>
+      <span class="badge b-matplotlib" style="animation-delay:.4s">📈 Matplotlib</span>
+      <span class="badge b-seaborn" style="animation-delay:.45s">🌊 Seaborn</span>
+      <span class="badge b-ml" style="animation-delay:.5s">🤖 Machine Learning</span>
+      <span class="badge b-mysql" style="animation-delay:.55s">🐬 MySQL</span>
+      <span class="badge b-mongodb" style="animation-delay:.6s">🍃 MongoDB</span>
+      <span class="badge b-js" style="animation-delay:.65s">⚡ JavaScript</span>
+      <span class="badge b-git" style="animation-delay:.7s">🔧 Git</span>
+      <span class="badge b-tableau" style="animation-delay:.75s">📉 Tableau</span>
+    </div>
+  </div>
+
+  <!-- GITHUB STATS -->
+  <div class="section" style="animation-delay:.4s">
+    <div class="sec-header">
+      <div class="sec-line"></div>
+      <div class="sec-title">⟢ GITHUB STATS</div>
+      <div class="sec-line"></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-num" id="commits-count">0</div><div class="stat-label">TOTAL COMMITS</div></div>
+      <div class="stat-card"><div class="stat-num" id="repos-count">0</div><div class="stat-label">REPOSITORIES</div></div>
+      <div class="stat-card"><div class="stat-num" id="streak-count">0</div><div class="stat-label">DAY STREAK</div></div>
+      <div class="stat-card"><div class="stat-num" id="stars-count">0</div><div class="stat-label">STARS EARNED</div></div>
+    </div>
+  </div>
+
+  <!-- CONTRIBUTION HEATMAP -->
+  <div class="section" style="animation-delay:.5s">
+    <div class="sec-header">
+      <div class="sec-line"></div>
+      <div class="sec-title">⟢ CONTRIBUTION GRAPH</div>
+      <div class="sec-line"></div>
+    </div>
+    <div class="heat-grid" id="heatmap"></div>
+  </div>
+
+  <!-- FEATURED PROJECTS -->
+  <div class="section" style="animation-delay:.55s">
+    <div class="sec-header">
+      <div class="sec-line"></div>
+      <div class="sec-title">⟢ FEATURED PROJECTS</div>
+      <div class="sec-line"></div>
+    </div>
+    <div class="project-card" style="animation-delay:.1s">
+      <div class="proj-title">📊 E-Commerce Sales Dashboard</div>
+      <div class="proj-desc">Interactive Power BI dashboard analyzing sales trends, customer behavior, and profit margins across multiple product categories.</div>
+      <div class="proj-tags"><span class="proj-tag">Power BI</span><span class="proj-tag">Python</span><span class="proj-tag">SQL</span><span class="proj-tag">DAX</span></div>
+    </div>
+    <div class="project-card" style="animation-delay:.2s">
+      <div class="proj-title">🤖 Customer Churn Prediction</div>
+      <div class="proj-desc">Machine learning model achieving 91% accuracy in predicting customer churn using Random Forest and feature engineering techniques.</div>
+      <div class="proj-tags"><span class="proj-tag">Scikit-learn</span><span class="proj-tag">Pandas</span><span class="proj-tag">EDA</span><span class="proj-tag">ML</span></div>
+    </div>
+    <div class="project-card" style="animation-delay:.3s">
+      <div class="proj-title">🏙️ IPL Data Analysis</div>
+      <div class="proj-desc">Deep exploratory analysis of IPL match data from 2008–2024 with interactive visualizations using Matplotlib and Seaborn.</div>
+      <div class="proj-tags"><span class="proj-tag">Python</span><span class="proj-tag">Seaborn</span><span class="proj-tag">NumPy</span><span class="proj-tag">Jupyter</span></div>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-card" style="animation-delay:.7s">
+    <div class="quote-text">"Without data, you're just another person with an opinion."</div>
+    <div class="quote-author">— W. Edwards Deming</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-row">
+    <span class="visitor-badge">
+      <span class="online-dot"></span>
+      <span>Profile Views: </span><span class="visitor-count" id="visitor-count">1,247</span>
+    </span>
+    <span style="font-size:11px;color:#333;font-family:'Space Mono',monospace">made with 💙 by Gaurav</span>
+  </div>
+
+</div>
+
+<script>
+// Typing animation
+const phrases = [
+  "Turning raw data into insights...",
+  "Building dashboards that tell stories...",
+  "Python + SQL + Power BI = Magic ✨",
+  "Aspiring Data Analyst 🚀",
+  "Learning. Building. Growing."
+];
+let pi=0, ci=0, deleting=false, el=document.getElementById('typed-text');
+function type(){
+  let phrase=phrases[pi];
+  if(!deleting){
+    el.textContent=phrase.substring(0,ci+1);
+    ci++;
+    if(ci===phrase.length){deleting=true;setTimeout(type,1800);return;}
+  } else {
+    el.textContent=phrase.substring(0,ci-1);
+    ci--;
+    if(ci===0){deleting=false;pi=(pi+1)%phrases.length;}
+  }
+  setTimeout(type,deleting?40:70);
+}
+setTimeout(type,800);
+
+// Animated counters
+function animateCount(id, target, duration){
+  let el=document.getElementById(id), start=0, step=target/60;
+  let interval=setInterval(()=>{
+    start+=step;
+    if(start>=target){start=target;clearInterval(interval);}
+    el.textContent=Math.round(start).toLocaleString();
+  }, duration/60);
+}
+setTimeout(()=>{
+  animateCount('commits-count',1247,1200);
+  animateCount('repos-count',23,800);
+  animateCount('streak-count',47,900);
+  animateCount('stars-count',89,1000);
+},400);
+
+// Contribution heatmap
+const heatmap=document.getElementById('heatmap');
+const levels=[0,1,2,3,4];
+for(let i=0;i<364;i++){
+  let cell=document.createElement('div');
+  let w=Math.random();
+  let level=w<0.3?0:w<0.5?1:w<0.7?2:w<0.9?3:4;
+  cell.className='heat-cell h'+level;
+  cell.title=`${level} contributions`;
+  heatmap.appendChild(cell);
+}
+
+// Stagger social buttons animation
+document.querySelectorAll('.social-btn').forEach((btn,i)=>{
+  btn.style.opacity='0';
+  btn.style.transform='translateY(20px)';
+  setTimeout(()=>{
+    btn.style.transition='all .4s ease';
+    btn.style.opacity='1';
+    btn.style.transform='translateY(0)';
+  }, 300+i*60);
+});
+
+// Badge stagger
+document.querySelectorAll('.badge').forEach((b,i)=>{
+  b.style.opacity='0';
+  b.style.transform='scale(.8)';
+  setTimeout(()=>{
+    b.style.transition='all .3s ease';
+    b.style.opacity='1';
+    b.style.transform='scale(1)';
+  }, 600+i*50);
+});
+</script>
+</body>
+</html>
